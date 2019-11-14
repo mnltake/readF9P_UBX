@@ -193,7 +193,7 @@ def persePVT(ackPacket):
     for i in range(1,4):
         bytevalue  +=  ackPacket[byteoffset+i] 
     pospvt[8] = int.from_bytes(bytevalue, byteorder='little',signed=True) 
-    print("Height:%.4f m" %float(pospvt[8]/100000)  )
+    print("Height:%.4f m" %float(pospvt[8]/1000)  )
 
     #Height above mean sea level
     byteoffset =36 +HEADER
@@ -201,7 +201,7 @@ def persePVT(ackPacket):
     for i in range(1,4):
         bytevalue  +=  ackPacket[byteoffset+i] 
     pospvt[9] = int.from_bytes(bytevalue, byteorder='little',signed=True) 
-    print("hMSL :%.4f m" %float(pospvt[9]/100000)  )
+    print("hMSL :%.4f m" %float(pospvt[9]/1000)  )
 
     #Ground Speed
     byteoffset =60 +HEADER
