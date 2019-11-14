@@ -1,6 +1,6 @@
+#RELPOSNED and POSLLH
+
 import serial
-
-
 HEADER = 6
 RELPOSNED = b'\x3c'
 lenRELPOSNED = HEADER + 64 +2
@@ -8,29 +8,22 @@ POSLLH = b'\x02'
 lenPOSLLH = HEADER + 28 + 2
 
 def readUBX():
-    
-    buffsize = lenPOSLLH + lenRELPOSNED #108
-    
-
-    with serial.Serial('COM17', 115200, timeout=1) as ser:
+     buffsize = lenPOSLLH + lenRELPOSNED #108
+     with serial.Serial('COM17', 115200, timeout=1) as ser:
         buffer =[]
         j=0   
         for b in range(buffsize):
             buffer.append(ser.read())
-        #print(buffer)
-         
         while j < buffsize : 
             i = 0
             payloadlength = 0
             ackPacket=[b'\xB5',b'\x62',b'\x01',b'\x00',b'\x00',b'\x00']
-            while i < payloadlength +8:
-                
+            while i < payloadlength +8:              
                 if j < buffsize :
                     incoming_byte = buffer[j]   
                     j += 1
                 else :
                     break
-
                 if (i < 3) and (incoming_byte == ackPacket[i]):
                     i += 1
                 elif i == 3:
@@ -51,9 +44,6 @@ def readUBX():
                     perseNED(ackPacket)
                 elif ackPacket[3] == POSLLH:
                     perseLLH(ackPacket)
-
-
-
 
 def checksum(ackPacket,payloadlength ):
     CK_A =0
