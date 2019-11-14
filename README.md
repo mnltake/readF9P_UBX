@@ -1,5 +1,5 @@
 # readF9P_UBX
-perse F9P UBX mesage python module
+decode F9P UBX mesage python module
 
 UBX-NAV-RELPOSNED (0x01 0x31)
 UBX-NAV-POSLLH (0x01 0x02)
