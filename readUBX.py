@@ -1,4 +1,4 @@
-#RELPOSNED and POSLLH
+#RELPOSNED and PVT
 
 import serial
 HEADER = 6
