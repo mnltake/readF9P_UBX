@@ -59,7 +59,7 @@ def checksum(ackPacket,payloadlength ):
     CK_A &=0xff
     CK_B &=0xff
     if (CK_A ==  int.from_bytes(ackPacket[-2], byteorder='little',signed=False)) and (CK_B ==  int.from_bytes(ackPacket[-1], byteorder='little',signed=False)):
-        print("ACK Received")
+        #print("ACK Received")
         return True
     else :
         print("ACK Checksum Failure:")  
@@ -209,8 +209,9 @@ def persePVT(ackPacket):
     for i in range(1,4):
         bytevalue  +=  ackPacket[byteoffset+i] 
     pospvt[10] = int.from_bytes(bytevalue, byteorder='little',signed=True) 
-    print("aSpeed :%.4f m/s" %float(pospvt[10]/1000)  )
+    print("gSpeed :%.4f m/s" %float(pospvt[10]/1000)  )
     return pospvt
 
 while 1:
     readUBX()
+
