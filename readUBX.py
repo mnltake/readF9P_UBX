@@ -157,7 +157,7 @@ def perseLLH(ackPacket):
     bytevalue = ackPacket[byteoffset] 
     for i in range(1,4):
         bytevalue  +=  ackPacket[byteoffset+i] 
-    posllh[2] = int.from_bytes(bytevalue, byteorder='little',signed=True) 
+    posllh[3] = int.from_bytes(bytevalue, byteorder='little',signed=True) 
     print("hMSL :%.4f m" %float(posllh[3]/100000)  )
 
     return posllh
