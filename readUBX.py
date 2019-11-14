@@ -6,14 +6,17 @@ RELPOSNED = b'\x3c'
 lenRELPOSNED = HEADER + 64 +2
 POSLLH = b'\x02'
 lenPOSLLH = HEADER + 28 + 2
+PVT =b'\x07'
+lenPVT = HEADER + 92 +2
 
 def readUBX():
-     buffsize = lenPOSLLH + lenRELPOSNED #108
+     buffsize = lenRELPOSNED + lenPVT #172
      with serial.Serial('COM17', 115200, timeout=1) as ser:
         buffer =[]
         j=0   
         for b in range(buffsize):
             buffer.append(ser.read())
+        #print(buffer)
         while j < buffsize : 
             i = 0
             payloadlength = 0
@@ -44,6 +47,8 @@ def readUBX():
                     perseNED(ackPacket)
                 elif ackPacket[3] == POSLLH:
                     perseLLH(ackPacket)
+                elif ackPacket[3] == PVT:
+                    persePVT(ackPacket)
 
 def checksum(ackPacket,payloadlength ):
     CK_A =0
@@ -151,6 +156,61 @@ def perseLLH(ackPacket):
     print("hMSL :%.4f m" %float(posllh[3]/100000)  )
 
     return posllh
+def persePVT(ackPacket):
+    pospvt=[0]*11
+    #Year
+    byteoffset = 4 +HEADER
+    bytevalue = ackPacket[byteoffset] 
+    bytevalue  +=  ackPacket[byteoffset+1] 
+    pospvt[0] = int.from_bytes(bytevalue, byteorder='little',signed=True) 
+    print("year:%d " %pospvt[0] )
+    #month day hour min sec
+    byteoffset =6 +HEADER
+    bytevalue = ackPacket[byteoffset] 
+    for i in range(5):
+        bytevalue  =  ackPacket[byteoffset+i] 
+        pospvt[1+i] = int.from_bytes(bytevalue, byteorder='little',signed=True) 
+    print("MDhms:%d/%d-%d:%d:%d " %(pospvt[1],pospvt[2],pospvt[3],pospvt[4],pospvt[5] ))
+
+    #PosLon
+    byteoffset = 24 +HEADER
+    bytevalue = ackPacket[byteoffset] 
+    for i in range(1,4):
+        bytevalue  +=  ackPacket[byteoffset+i] 
+    pospvt[6] = int.from_bytes(bytevalue, byteorder='little',signed=True) 
+    print("LON:%f " %float(pospvt[6] /10000000) )
+    #PosLat
+    byteoffset =28 +HEADER
+    bytevalue = ackPacket[byteoffset] 
+    for i in range(1,4):
+        bytevalue  +=  ackPacket[byteoffset+i] 
+    pospvt[7] = int.from_bytes(bytevalue, byteorder='little',signed=True) 
+    print("LAT:%f " %float(pospvt[7] /10000000) )
+
+    #posHeight
+    byteoffset =32 +HEADER
+    bytevalue = ackPacket[byteoffset] 
+    for i in range(1,4):
+        bytevalue  +=  ackPacket[byteoffset+i] 
+    pospvt[8] = int.from_bytes(bytevalue, byteorder='little',signed=True) 
+    print("Height:%.4f m" %float(pospvt[8]/100000)  )
+
+    #Height above mean sea level
+    byteoffset =36 +HEADER
+    bytevalue = ackPacket[byteoffset] 
+    for i in range(1,4):
+        bytevalue  +=  ackPacket[byteoffset+i] 
+    pospvt[9] = int.from_bytes(bytevalue, byteorder='little',signed=True) 
+    print("hMSL :%.4f m" %float(pospvt[9]/100000)  )
+
+    #Ground Speed
+    byteoffset =60 +HEADER
+    bytevalue = ackPacket[byteoffset] 
+    for i in range(1,4):
+        bytevalue  +=  ackPacket[byteoffset+i] 
+    pospvt[10] = int.from_bytes(bytevalue, byteorder='little',signed=True) 
+    print("aSpeed :%.4f m/s" %float(pospvt[10]/1000)  )
+    return pospvt
 
 while 1:
     readUBX()
