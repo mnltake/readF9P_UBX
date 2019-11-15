@@ -1,7 +1,5 @@
 #RELPOSNED and PVT
 
-
-
 def readUBX(readbytes):
     RELPOSNED = b'\x3c'
     PVT =b'\x07'
@@ -235,7 +233,7 @@ ubxmsg['*']     ex. northcm =ubxmsg['N']
         heading 0.00001deg(1e-5)
         carrSoln    0:no carrier 1:float 2:fix
         gnssFixOk   0:no 1:ok
-        iTow    ms
+        iTow    ms GPS time of week
     (PVT)
         year    UTC
         month
