@@ -79,7 +79,7 @@ def perseNED(ackPacket):
     for i in range(1,4):
         bytevalue  +=  ackPacket[byteoffset+i] 
     posned["D"] = int.from_bytes(bytevalue, byteorder='little',signed=True) 
-    posned["DH"] = int.from_bytes(ackPacket[33 + 6], byteorder='little',signed=True)     #print("D:%0.2f cm" %posned["D"]  )
+    posned["DH"] = int.from_bytes(ackPacket[34 + 6], byteorder='little',signed=True)     #print("D:%0.2f cm" %posned["D"]  )
 
     #Carrier solution status
     flags = int.from_bytes(ackPacket[60 + 6], byteorder='little',signed=True) 
